@@ -297,7 +297,7 @@ class Castle {
 
 
 
-class KKangarooCastle : Castle {
+class KangarooCastle : Castle {
     
     var rubber:Int = 100
     var trampolines:Int = 50
