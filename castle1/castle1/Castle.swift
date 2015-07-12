@@ -24,6 +24,7 @@ class Castle {
     
     private var _availableAttacks:[Castle -> ()] = []
     private var _availableAttackNames:[String] = []
+    private var _unavaiableAttackNames:[String] = []
     
     private var _specialAttacks:[()->((Castle)->(), String)?] = []
     
@@ -78,6 +79,20 @@ class Castle {
         return Int(arc4random_uniform(UInt32(number)))
     }
     
+   
+    func arrayToTabbedList (arr:[String]) -> String {
+        
+        var list:String = ""
+        
+        for item in arr {
+            
+            list += "      \(item)\n"
+        
+        }
+        
+        return list
+    
+    }
     
     
     
@@ -106,6 +121,7 @@ class Castle {
         
         _availableAttacks = [steal, startFire]
         _availableAttackNames = ["Steal", "StartFire"]
+        _unavaiableAttackNames = []
         
         for atk in _specialAttacks {
             
@@ -116,7 +132,8 @@ class Castle {
             }
         }
         
-        println("   Available attacks/moves: \(_availableAttackNames)")
+        print("   Available attacks/moves:\n\(arrayToTabbedList(_availableAttackNames))")
+        print("   Unavailable:\n\(arrayToTabbedList(_unavaiableAttackNames))")
         
     }
     
@@ -352,7 +369,7 @@ class KangarooCastle : Castle {
         
         var hasReqs:Bool = false
         
-        if (self.aggression >= 105 && self.money >= 5 && self.health >= 300) {
+        if (self.aggression >= 105 && self.money >= 50 && self.health >= 300) {
             
             hasReqs = true
         }
@@ -363,23 +380,34 @@ class KangarooCastle : Castle {
             var i = 1 + randomPick(4)
             var numTimes = i
             var damage = 60
+      
             
             
             while (i > 0) {
                 
-                println("Kick!")
+                println("   Kick!")
                 i--
             
             }
             
-            println("\(self.castleName) used RapidKick on \(victim.castleName), and kicked \(numTimes) time(s)!")
-            
-            
-          
+            println("   \(self.castleName) used RapidKick on \(victim.castleName), and kicked \(numTimes) time(s)!")
+            println("   \(self.castleName) dealt a total of \(numTimes*damage) health damage!")
+            victim.sufferAttack((numTimes*damage, 0, 0, 0, 0, true), attacker: self)
+            self.dMoney(-50)
+
             
         }
         
-        return (kangarooCourt, "KangarooCourt")
+        if (hasReqs){
+        
+            return (rapidKick, "RapidKick (cost: m50)")
+        
+        } else {
+        
+            _unavaiableAttackNames.append("RapidKick (req: a>=105, h>=300, m>=50)")
+            return nil
+        }
+        
         
         
     }
