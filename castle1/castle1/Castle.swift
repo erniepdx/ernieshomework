@@ -348,8 +348,44 @@ class KangarooCastle : Castle {
     }
     
     func checkRapidKick() -> (((Castle)->(), String)?) {
-    
+        
+        
+        var hasReqs:Bool = false
+        
+        if (self.aggression >= 105 && self.money >= 5 && self.health >= 300) {
+            
+            hasReqs = true
+        }
+        
+        
+        func rapidKick (victim:Castle) ->() {
+            
+            var i = 1 + randomPick(4)
+            var numTimes = i
+            var damage = 60
+            
+            
+            while (i > 0) {
+                
+                println("Kick!")
+                i--
+            
+            }
+            
+            println("\(self.castleName) used RapidKick on \(victim.castleName), and kicked \(numTimes) time(s)!")
+            
+            
+          
+            
+        }
+        
+        return (kangarooCourt, "KangarooCourt")
+        
+        
     }
+
+    
+    
     
     
     func checkStampede () -> (((Castle)->(), String)?) {
