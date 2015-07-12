@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let stringArray:[String] = ["Well hey, this is a String.\nWhat could possibly be next?", "Gag me with a spoon!\nIt's another String!", "And a third...", "This is getting old...", "This is the last string in the array.\nBut I dare you to hit Next ;)"]
+    let stringArray:[String] = ["Well hey, this is a String. What could possibly be next?", "Gag me with a spoon! It's another String!", "And a third...", "This is getting old...", "This is the last string in the array. But I dare you to hit Next ;)"]
     
     var ind:Int = 0
     
@@ -33,7 +33,21 @@ class ViewController: UIViewController {
     
     }
     
+    @IBAction func lastTapped(sender: AnyObject) {
     
+        ind = stringArray.count - 1
+    
+        myLabel.text = stringArray[ind]
+    
+    }
+    
+    @IBAction func firstTapped(sender: AnyObject) {
+        
+        ind = 0
+        
+        myLabel.text = stringArray[ind]
+        
+    }
     @IBAction func previousTapped(sender: AnyObject) {
         
         
