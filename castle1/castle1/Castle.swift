@@ -411,6 +411,22 @@ class KangarooCastle : Castle {
     
         super.manageResources()
         
+        var addRubber:Int = randomPick(30)
+        
+        dRubber(addRubber)
+        
+        println("   \(self.castleName) harvested and manufactured \(addRubber) rubber.")
+        
+        if(rubber >= 50) {
+            
+            var newTrampolines = randomPick(4)
+            dTrampolines(newTrampolines)
+            dRubber(-newTrampolines*15)
+            println("   \(newTrampolines) new trampolines were created using \(newTrampolines*15) rubber.")
+        
+        
+        }
+        
         
     }
     
@@ -594,7 +610,7 @@ class KangarooCastle : Castle {
         
         if (hasReqs) {
         
-            return (deathMarch, "DeathMarch (cost: h \(health - 5), p \(popul - 5))")
+            return (deathMarch, "DeathMarch (cost: h \(health - 1), p \(popul - 1))")
         
         } else {
             
