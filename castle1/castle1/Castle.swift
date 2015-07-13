@@ -24,7 +24,7 @@ class Castle {
     
     private var _availableAttacks:[Castle -> ()] = []
     private var _availableAttackNames:[String] = []
-    private var _unavaiableAttackNames:[String] = []
+    private var _unavailableAttackNames:[String] = []
     
     private var _specialAttacks:[()->((Castle)->(), String)?] = []
     
@@ -121,7 +121,7 @@ class Castle {
         
         _availableAttacks = [steal, startFire]
         _availableAttackNames = ["Steal", "StartFire"]
-        _unavaiableAttackNames = []
+        _unavailableAttackNames = []
         
         for atk in _specialAttacks {
             
@@ -133,19 +133,26 @@ class Castle {
         }
         
         println("   Available attacks/moves:\(arrayToTabbedList(_availableAttackNames))")
-        println("   Unavailable:\(arrayToTabbedList(_unavaiableAttackNames))")
+        println("   Unavailable:\(arrayToTabbedList(_unavailableAttackNames))")
         
+    }
+    
+    private func manageResources() {
+    
+    
+    
+    
     }
     
     private func checkBasicNeeds() -> Bool {
         
-        if _health < 50 {
+        if _health < 10 {
             dHealth(100)
             println("   " + self.castleName + " needed to spend this turn tending to the healthcare struggles of its subjects!\n    Health is now at " + String(_health) + ".")
             return false
         }
         
-        if _food < 50 {
+        if _food < 10 {
             dFood(100)
             println("   " + self.castleName + " needed to spend this turn battling malnutrition!\n  Food has increased to " + String(_food) + ".")
             return false
@@ -317,13 +324,13 @@ class Castle {
 class KangarooCastle : Castle {
     
     var rubber:Int = 100
-    var trampolines:Int = 50
+    var trampolines:Int = 4
     
     init(kName:String){
         
         super.init(myName: kName)
         
-        _specialAttacks = [checkKangarooCourt, checkRapidKick, checkStampede, checkDeathThrash]
+        _specialAttacks = [checkKangarooCourt, checkRapidKick, checkBouncingBrigade, checkDeathMarch]
         
     }
     
@@ -369,7 +376,7 @@ class KangarooCastle : Castle {
         
         var hasReqs:Bool = false
         
-        if (self.aggression >= 105 && self.money >= 50 && self.health >= 300) {
+        if (self.aggression >= 105 && self.money >= 150 && self.health >= 300) {
             
             hasReqs = true
         }
@@ -393,18 +400,18 @@ class KangarooCastle : Castle {
             println("   \(self.castleName) used RapidKick on \(victim.castleName), and kicked \(numTimes) time(s)!")
             println("   \(self.castleName) dealt a total of \(numTimes*damage) health damage!")
             victim.sufferAttack((numTimes*damage, 0, 0, 0, 0, true), attacker: self)
-            self.dMoney(-50)
+            self.dMoney(-150)
 
             
         }
         
         if (hasReqs){
         
-            return (rapidKick, "RapidKick (cost: m50)")
+            return (rapidKick, "RapidKick (cost: m 50)")
         
         } else {
         
-            _unavaiableAttackNames.append("RapidKick (req: a>=105, h>=300, m>=50)")
+            _unavailableAttackNames.append("RapidKick (req: a ≥ 105, h ≥ 300, m ≥ 50)")
             return nil
         }
         
@@ -416,11 +423,84 @@ class KangarooCastle : Castle {
     
     
     
-    func checkStampede () -> (((Castle)->(), String)?) {
+    func checkBouncingBrigade () -> (((Castle)->(), String)?) {
+        
+        var hasReqs = false
+
+        
+        if (aggression >= 120 && trampolines >= 10 && money >= 750) {
+            hasReqs = true
+        }
+        
+        func bouncingBrigade(victim: Castle) {
+            
+            var damageHealth = 100 + randomPick(200)
+            var damagePop = 100 + randomPick(200)
+            
+            
+            println("   \(self.castleName) sent out the Bouncing Bringade!")
+            println("   The Bouncing Brigade set out to do \(damageHealth) health damage and liquidate \(damagePop) subjects of \(victim.castleName)!")
+            victim.sufferAttack((damageHealth, damagePop, 0, 0, 0, true), attacker: self)
+            dMoney(-750)
+            
+        }
+        
+        if (hasReqs) {
+        
+            return (bouncingBrigade, "BouncingBrigade (cost: m 750)")
+        
+        } else {
+            
+            _unavailableAttackNames.append("BouncingBrigade (req: m ≥ 750, a ≥ 120, trampolines ≥ 10)")
+            return nil
+            
+        }
+        
+        
+        
     
     }
     
-    func checkDeathThrash () -> (((Castle)->(), String)?) {
+    func checkDeathMarch () -> (((Castle)->(), String)?) {
+        
+        var hasReqs = false
+        
+        if (health <= 70 || popul <= 70) {
+        
+            hasReqs = true
+            
+        }
+        
+        func deathMarch(victim: Castle){
+            
+            var hdamage = 500 + self.aggression*2
+            
+            println(
+            "   With the very existence of the kingdom in the balance, every kangaroo has volunteered" +
+            "\n   his/her own life for the very dream that their castle may survive into the eons! They\n" +
+            "   have gone on a DEATH MARCH.")
+            
+            self._health = 1
+            self._popul = 1
+           
+            victim.sufferAttack((hdamage, 0, 0, 0, 0, true), attacker: self)
+            
+            println("   Although the inhabitants of \(self.castleName) were able to commit a heroic amount of damage,\n   the civilian cost was enourmous.")
+            
+        
+        }
+        
+        if (hasReqs) {
+        
+            return (deathMarch, "DeathMarch (cost: h \(health - 5), p \(popul - 5))")
+        
+        } else {
+            
+            _unavailableAttackNames.append("DeathMarch (req: h/p ≤ 70)")
+            return nil
+            
+        }
+        
     
     }
     
