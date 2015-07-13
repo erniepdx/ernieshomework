@@ -86,7 +86,7 @@ class Castle {
         
         for item in arr {
             
-            list += "      \(item)\n"
+            list += "\n      \(item)"
         
         }
         
@@ -132,8 +132,8 @@ class Castle {
             }
         }
         
-        print("   Available attacks/moves:\n\(arrayToTabbedList(_availableAttackNames))")
-        print("   Unavailable:\n\(arrayToTabbedList(_unavaiableAttackNames))")
+        println("   Available attacks/moves:\(arrayToTabbedList(_availableAttackNames))")
+        println("   Unavailable:\(arrayToTabbedList(_unavaiableAttackNames))")
         
     }
     
