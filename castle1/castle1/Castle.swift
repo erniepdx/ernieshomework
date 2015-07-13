@@ -99,6 +99,7 @@ class Castle {
     func takeTurn (target: Castle) {
         
         println("\(self.castleName)'s turn:")
+        manageResources()
     
         if (_longTermImpediment == nil || _longTermImpediment!() == false) &&
             (checkBasicNeeds() == true) {
@@ -137,12 +138,31 @@ class Castle {
         
     }
     
+    
+    
     private func manageResources() {
     
-    
-    
+        if (money <= 50) {
+            
+            var popDown = -10 - randomPick(40)
+            
+            dPopul(popDown)
+            println("   \(popDown) subjects have left due to economic hardships!")
+        
+        }
+        
+        if (food <= 50) {
+            
+            var popDown = -10 - randomPick(40)
+            
+            dPopul(popDown)
+            println("   \(popDown) subjects have left due to food shortages!")
+            
+        }
     
     }
+    
+    
     
     private func checkBasicNeeds() -> Bool {
         
