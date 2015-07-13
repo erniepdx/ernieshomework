@@ -99,6 +99,9 @@ class Castle {
     func takeTurn (target: Castle) {
         
         println("\(self.castleName)'s turn:")
+        
+        printStats("Starting stats: ")
+        print("\n")
         manageResources()
     
         if (_longTermImpediment == nil || _longTermImpediment!() == false) &&
@@ -112,6 +115,9 @@ class Castle {
                 
             
         }
+        
+        printStats("Ending stats: ")
+        print("\n")
         
     
     }
@@ -162,6 +168,11 @@ class Castle {
     
     }
     
+    func printStats(opening:String) {
+    
+    print("   \(opening) health: \(health), population: \(popul), food: \(food), money: \(money), aggression: \(aggression)")
+    
+    }
     
     
     private func checkBasicNeeds() -> Bool {
@@ -213,7 +224,7 @@ class Castle {
         dMoney(mdamage)
         dAggression(adamage)
         
-        println("     POST-FIRE REPORT for \(self.castleName):\n        Health: \(health) (\(hdamage))\n        Pop: \(popul) (\(pdamage))\n        Food: \(food) (\(fdamage))\n        Money: \(money) (\(mdamage))\n        Aggression: \(aggression) (+\(adamage))")
+        println("     POST-FIRE REPORT for \(self.castleName):\n        health: \(health) (\(hdamage))\n        pop: \(popul) (\(pdamage))\n        food: \(food) (\(fdamage))\n        money: \(money) (\(mdamage))\n        aggression: \(aggression) (+\(adamage))")
         
     }
     
@@ -353,6 +364,77 @@ class KangarooCastle : Castle {
         _specialAttacks = [checkKangarooCourt, checkRapidKick, checkBouncingBrigade, checkDeathMarch]
         
     }
+    
+    
+    override func printStats(subopening: String) {
+        super.printStats(subopening)
+        print(", rubber: \(rubber), trampolines: \(trampolines)")
+    }
+    
+    override func sufferFire() {
+        
+        super.sufferFire()
+        var damageTrampolines = randomPick(trampolines/4)
+        var damageRubber =  randomPick(rubber/4)
+        
+        dTrampolines(-damageTrampolines)
+        dRubber(-damageRubber)
+        
+        println("        rubber: \(rubber) (-\(damageRubber))\n        trampolines: \(trampolines) (-\(damageTrampolines))")
+        
+    }
+    
+    
+    override func sufferAttack(attack: (h: Int, p: Int, f: Int, m: Int, a: Int, canEvade: Bool), attacker: Castle) {
+    
+        var jumpNum = randomPick(4)
+        
+        if (jumpNum == 1 && attack.canEvade == true) {
+            
+            println("   \(self.castleName) completely evaded the attack by jumping into the air!")
+            
+        } else {
+            
+            dHealth(-attack.h)
+            dPopul(-attack.p)
+            dFood(-attack.f)
+            dMoney(-attack.m)
+            dAggression(-attack.a)
+            
+            println("\(self.castleName) suffered the full brunt of the attack!")
+            
+        }
+        
+    }
+    
+    override func manageResources() {
+    
+        super.manageResources()
+        
+        
+    }
+    
+    
+    
+    func dRubber(num:Int) {
+        
+        rubber += num
+        if rubber <= 0 {
+            rubber = 0
+        }
+    
+    
+    }
+    
+    func dTrampolines(num:Int) {
+    
+        trampolines += num
+        if trampolines <= 0 {
+            trampolines = 0
+        }
+        
+    }
+    
     
     func checkKangarooCourt() -> (((Castle)->(), String)?) {
         
