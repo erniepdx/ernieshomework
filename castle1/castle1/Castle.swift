@@ -126,8 +126,8 @@ class Castle {
     
     private func updateAttacks() {
         
-        _availableAttacks = [steal, startFire]
-        _availableAttackNames = ["Steal", "StartFire"]
+        _availableAttacks = [steal, startFire, poisonWell]
+        _availableAttackNames = ["Steal", "StartFire", "PoisonWell"]
         _unavailableAttackNames = []
         
         for atk in _specialAttacks {
@@ -170,7 +170,9 @@ class Castle {
     
     func printStats(opening:String) {
     
-    print("   \(opening) health: \(health), population: \(popul), food: \(food), money: \(money), aggression: \(aggression)")
+        var indent = "".join(Array(count:count(opening), repeatedValue:" "))
+        
+        print("   \(opening) health: \(health), population: \(popul), food: \(food), money: \(money),\n\(indent)    aggression: \(aggression)")
     
     }
     
@@ -233,25 +235,25 @@ class Castle {
     
     
     
-    func sampleLongTermAttack (victim: Castle) {
+    func poisonWell (victim: Castle) {
     
-        println("\(self.castleName) poisoned \(victim.castleName)!!")
+        println("   \(self.castleName) poisoned \(victim.castleName)'s well!!")
         
-        var numberRounds:Int = 3
+        var numberRounds:Int = 1 + randomPick(4)
         
         func sampleImpediment () -> Bool {
             
             if numberRounds > 0 {
                 
-                victim.health - 10
-                println("   \(victim.castleName) lost 10 health from poison!")
+                victim.health - 20
+                println("   \(victim.castleName) lost 10 health from the poison in the wells!")
                 numberRounds--
            
             } else {
                 
                 victim._longTermImpediment = nil
                 
-                println("   \(victim.castleName) recovered from poison!")
+                println("   \(victim.castleName) cleared the poison from the wells!")
               
             }
             
@@ -272,7 +274,9 @@ class Castle {
         var stolenMoney:Int = Int(arc4random_uniform(UInt32(victim.money/10)))
         var stolenFood:Int = Int(arc4random_uniform(UInt32(victim.food/10)))
         
-        victim.sufferAttack((0,0,stolenFood,stolenMoney,0,false), attacker: self)
+        
+        victim.dMoney(-stolenMoney)
+        victim.dFood(-stolenFood)
         
         dMoney(stolenMoney)
         dFood(stolenFood)
@@ -401,7 +405,7 @@ class KangarooCastle : Castle {
             dMoney(-attack.m)
             dAggression(-attack.a)
             
-            println("\(self.castleName) suffered the full brunt of the attack!")
+            println("   \(self.castleName) suffered the full brunt of the attack!")
             
         }
         
@@ -468,13 +472,14 @@ class KangarooCastle : Castle {
                     
                     victim.dMoney(-fine)
                     self.dMoney(fine)
+                    numRounds--
                     
-                    print("   \(victim.castleName) paid $\(fine) in fines to \(self.castleName)!")
+                    println("   \(victim.castleName) paid $\(fine) in fines to \(self.castleName)!")
                     return false
                     
                 } else {
                     victim._longTermImpediment = nil
-                    print("   \(victim.castleName) finished paying its fines to \(self.castleName)!")
+                    println("   \(victim.castleName) finished paying its fines to \(self.castleName)!")
                     return false
                 }
                 

@@ -8,12 +8,10 @@
 
 import Foundation
 
-var ernie = Castle(myName: "Ernie's Castle")
-var kyle = Castle(myName: "Kyle's Kassel")
+var ernie = KangarooCastle(kName: "Ernie's Castle")
+var kyle = KangarooCastle(kName: "Kyle's Kassel")
 
 kyle.takeTurn(ernie)
-ernie.takeTurn(kyle)
-kyle.sampleLongTermAttack(ernie)
 ernie.takeTurn(kyle)
 kyle.takeTurn(ernie)
 ernie.takeTurn(kyle)
