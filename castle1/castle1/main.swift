@@ -8,13 +8,15 @@
 
 import Foundation
 
-var ernie = KangarooCastle(kName: "Ernie's Castle")
 var kyle = KangarooCastle(kName: "Kyle's Castle")
-var john = KangarooCastle(kName: "John's Castle")
+
+var ernie = BakeryCastle(bName: "Ernie's Castle")
+
+var john = BakeryCastle(bName: "John's Castle")
 var joan = KangarooCastle(kName: "Joan's Castle")
 
 
-var castles:[Castle] = [ernie, kyle, john, joan]
+var castles:[Castle] = [kyle, ernie]
 var turns:Int = 0
 
 
@@ -25,7 +27,7 @@ func randomPick (number: Int) -> Int {
 
 func play(){
     
-    while (turns <= 1000 && castles.count > 1) {
+    while (turns <= 5000 && castles.count > 1) {
         
         
         var ind = turns % castles.count

@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>B4D8AFC4-E506-4A89-BDD0-1708CD25D641</string>
 	<key>IDESourceControlProjectName</key>
-	<string>castle1</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>529812B6E904FA14A069CEBA28A501F6DE4B84D7</key>
 		<string>https://github.com/erniepdx/ernieshomework</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>castle1/castle1.xcodeproj</string>
+	<string>castle1/castle1.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>529812B6E904FA14A069CEBA28A501F6DE4B84D7</key>

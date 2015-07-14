@@ -149,7 +149,7 @@ class Castle {
     
         if (money <= 50) {
             
-            var popDown = -10 - randomPick(40)
+            var popDown = -1 - randomPick(10)
             
             dPopul(popDown)
             println("   \(popDown) subjects have left due to economic hardships!")
@@ -158,7 +158,7 @@ class Castle {
         
         if (food <= 50) {
             
-            var popDown = -10 - randomPick(40)
+            var popDown = -1 - randomPick(10)
             
             dPopul(popDown)
             println("   \(popDown) subjects have left due to food shortages!")
@@ -178,13 +178,13 @@ class Castle {
     
     private func checkBasicNeeds() -> Bool {
         
-        if _health < 10 {
+        if _health < 50 {
             dHealth(100)
             println("   " + self.castleName + " needed to spend this turn tending to the healthcare struggles of its subjects!\n   Health is now at " + String(_health) + ".")
             return false
         }
         
-        if _food < 10 {
+        if _food < 50 {
             dFood(100)
             println("   " + self.castleName + " needed to spend this turn battling malnutrition!\n   Food has increased to " + String(_food) + ".")
             return false
@@ -556,8 +556,8 @@ class KangarooCastle : Castle {
         
         func bouncingBrigade(victim: Castle) {
             
-            var damageHealth = 100 + randomPick(200)
-            var damagePop = 100 + randomPick(200)
+            var damageHealth = 200 + randomPick(200)
+            var damagePop = 200 + randomPick(200)
             
             
             println("   \(self.castleName) sent out the Bouncing Bringade!")
@@ -587,7 +587,7 @@ class KangarooCastle : Castle {
         
         var hasReqs = false
         
-        if (health <= 70 || popul <= 70) {
+        if (health <= 120 || popul <= 120) {
         
             hasReqs = true
             
@@ -637,13 +637,13 @@ class KangarooCastle : Castle {
 class BakeryCastle : Castle {
     
     var sugar:Int = 1000
-    var marzipanWall:Int = 30
+    var marzipanWall:Int = 5
     
     init(bName:String){
         
         super.init(myName: bName)
         
-        _specialAttacks = [checkKangarooCourt, checkRapidKick, checkBouncingBrigade, checkDeathMarch]
+        _specialAttacks = [checkSugarComa, checkCookieCannon, checkIcingTsunami]
         
     }
     
@@ -669,13 +669,11 @@ class BakeryCastle : Castle {
     
     override func sufferAttack(attack: (h: Int, p: Int, f: Int, m: Int, a: Int, canEvade: Bool), attacker: Castle) {
         
-        var jumpNum = randomPick(4)
-        
         var dmgHealth = attack.h * (100 - marzipanWall)/100
-        var dmgPopul = attack.h * (100 - marzipanWall)/100
-        var dmgFood = attack.h * (100 - marzipanWall)/100
-        var dmgMoney = attack.h * (100 - marzipanWall)/100
-        var dmgAggression = attack.h * (100 - marzipanWall)/100
+        var dmgPopul = attack.p * (100 - marzipanWall)/100
+        var dmgFood = attack.f * (100 - marzipanWall)/100
+        var dmgMoney = attack.m * (100 - marzipanWall)/100
+        var dmgAggression = attack.a * (100 - marzipanWall)/100
         
         
         if (attack.canEvade == true) {
@@ -684,7 +682,7 @@ class BakeryCastle : Castle {
             
             dHealth(-dmgHealth)
             dPopul(-dmgPopul)
-            dFood(-dmgPopul)
+            dFood(-dmgFood)
             dMoney(-dmgMoney)
             dAggression(-dmgAggression)
             
@@ -720,10 +718,10 @@ class BakeryCastle : Castle {
         
         if(sugar >= 100 && marzipanWall < 80) {
             
-            var newMarzipan = randomPick(2)
+            var newMarzipan = randomPick(10)
             dMarzipanWall(newMarzipan)
-            dSugar(-newMarzipan*25)
-            println("   The marzipan wall was increased by \(newMarzipan)% using \(newMarzipan*25) sugar.")
+            dSugar(-newMarzipan*5)
+            println("   The marzipan wall was increased by \(newMarzipan)% using \(newMarzipan*10) sugar.")
             
             
         }
@@ -762,85 +760,98 @@ class BakeryCastle : Castle {
     }
     
     
-    func checkKangarooCourt() -> (((Castle)->(), String)?) {
+    func checkSugarComa() -> (((Castle)->(), String)?) {
         
-        func kangarooCourt(victim:Castle) ->() {
+        var hasReqs = false
+        
+        if (sugar >= 30) {
+        
+            hasReqs = true
+        
+        }
+        
+        func sugarComa(victim:Castle) ->() {
             
-            var numRounds = 1 + randomPick(3)
-            var fine = randomPick(500)
+            var numRounds = 1 + (randomPick(4))
+            dSugar(-50)
             
-            println("   \(self.castleName) dragged \(victim.castleName) into Kangaroo Court!")
-            println("   \(self.castleName) awarded itself a recurring fine of $\(fine) from \(victim.castleName) for \(numRounds) round(s)!")
+            println("   \(self.castleName) caused \(victim.castleName) to go into a sugar coma!")
             
-            func court() -> Bool {
+            func coma() -> Bool {
                 
                 if (numRounds > 0) {
                     
-                    victim.dMoney(-fine)
-                    self.dMoney(fine)
+                    println("   \(victim.castleName) is in a sugar coma and can't attack!")
                     numRounds--
-                    
-                    println("   \(victim.castleName) paid $\(fine) in fines to \(self.castleName)!")
-                    return false
+                    return true
                     
                 } else {
                     victim._longTermImpediment = nil
-                    println("   \(victim.castleName) finished paying its fines to \(self.castleName)!")
+                    println("   \(victim.castleName) came out of the sugar coma!")
                     return false
                 }
                 
             }
             
-            victim.longTermImpediment = court
+            victim.longTermImpediment = coma
             
         }
         
-        return (kangarooCourt, "KangarooCourt")
         
+        if hasReqs {
+            
+            return (sugarComa, "SugarComa (cost: sugar 30)")
+        
+        } else {
+            _unavailableAttackNames.append("SugarComa (req: sugar ≥ 30)")
+            return nil
+        }
         
     }
     
-    func checkRapidKick() -> (((Castle)->(), String)?) {
+    
+    func checkCookieCannon() -> (((Castle)->(), String)?) {
         
         
         var hasReqs:Bool = false
         
-        if (self.aggression >= 105 && self.money >= 150 && self.health >= 300) {
+        if (self.aggression >= 110 && self.money >= 200 && self.health >= 200 && self.sugar >= 20) {
             
             hasReqs = true
         }
         
         
-        func rapidKick (victim:Castle) ->() {
+        func cookieCannon (victim:Castle) ->() {
             
-            var i = 1 + randomPick(4)
+            var i = 1 + randomPick(9)
             var numTimes = i
-            var damage = 60
+            var damage = 35
             
             
             
             while (i > 0) {
                 
-                println("   Kick!")
+                println("   Boom!")
                 i--
                 
             }
             
-            println("   \(self.castleName) used RapidKick on \(victim.castleName), and kicked \(numTimes) time(s)!")
+            println("   \(self.castleName) used CookieCannon on \(victim.castleName), and fired \(numTimes) time(s)!")
             println("   \(self.castleName) dealt a total of \(numTimes*damage) health damage!")
             victim.sufferAttack((numTimes*damage, 0, 0, 0, 0, true), attacker: self)
-            self.dMoney(-150)
+            self.dMoney(-200)
+            self.dSugar(-20)
             
             
         }
         
         if (hasReqs){
             
-            return (rapidKick, "RapidKick (cost: m 50)")
+            return (cookieCannon, "CookieCannon (cost: m 200, sugar 20)")
             
         } else {
             
-            _unavailableAttackNames.append("RapidKick (req: a ≥ 105, h ≥ 300, m ≥ 50)")
+            _unavailableAttackNames.append("CookieCannon (req: a ≥ 110, h ≥ 200, m ≥ 200, sugar ≥ 20)")
             return nil
         }
         
@@ -852,35 +863,36 @@ class BakeryCastle : Castle {
     
     
     
-    func checkBouncingBrigade () -> (((Castle)->(), String)?) {
+    func checkIcingTsunami () -> (((Castle)->(), String)?) {
         
         var hasReqs = false
         
         
-        if (aggression >= 120 && trampolines >= 10 && money >= 750) {
+        if (aggression >= 120 && money >= 2500 && sugar >= 200) {
             hasReqs = true
         }
         
-        func bouncingBrigade(victim: Castle) {
+        func icingTsunami (victim: Castle) {
             
-            var damageHealth = 100 + randomPick(200)
-            var damagePop = 100 + randomPick(200)
+            var damageHealth = 250 + randomPick(300)
+            var damagePop = 250 + randomPick(100)
             
             
-            println("   \(self.castleName) sent out the Bouncing Bringade!")
-            println("   The Bouncing Brigade set out to do \(damageHealth) health damage and liquidate \(damagePop) subjects of \(victim.castleName)!")
+            println("   \(self.castleName) summoned a tsunami of icing!!!")
+            println("   The tsunami generated \(damageHealth) health damage and killed\n   an estimated \(damagePop) subjects of \(victim.castleName)!")
             victim.sufferAttack((damageHealth, damagePop, 0, 0, 0, true), attacker: self)
-            dMoney(-750)
+            dMoney(-2500)
+            dSugar(-400)
             
         }
         
         if (hasReqs) {
             
-            return (bouncingBrigade, "BouncingBrigade (cost: m 750)")
+            return (icingTsunami, "IcingTsunami (cost: m 2500, sugar 400)")
             
         } else {
             
-            _unavailableAttackNames.append("BouncingBrigade (req: m ≥ 750, a ≥ 120, trampolines ≥ 10)")
+            _unavailableAttackNames.append("IcingTsunami (req: m ≥ 2500, a ≥ 120, sugar ≥ 200)")
             return nil
             
         }
@@ -890,49 +902,7 @@ class BakeryCastle : Castle {
         
     }
     
-    func checkDeathMarch () -> (((Castle)->(), String)?) {
-        
-        var hasReqs = false
-        
-        if (health <= 70 || popul <= 70) {
-            
-            hasReqs = true
-            
-        }
-        
-        func deathMarch(victim: Castle){
-            
-            var hdamage = 500 + self.aggression*2
-            
-            println(
-                "   With the very existence of the kingdom in the balance, every kangaroo has volunteered" +
-                    "\n   his/her own life for the very dream that their castle may survive into the eons! They\n" +
-                "   have gone on a DEATH MARCH.")
-            
-            self._health = 1
-            self._popul = 1
-            
-            victim.sufferAttack((hdamage, 0, 0, 0, 0, true), attacker: self)
-            
-            println("   Although the inhabitants of \(self.castleName) were able to commit a heroic amount of damage,\n   the civilian cost was enourmous.")
-            
-            
-        }
-        
-        if (hasReqs) {
-            
-            return (deathMarch, "DeathMarch (cost: h \(health - 1), p \(popul - 1))")
-            
-        } else {
-            
-            _unavailableAttackNames.append("DeathMarch (req: h/p ≤ 70)")
-            return nil
-            
-        }
-        
-        
-    }
-    
+
 }
 
 
