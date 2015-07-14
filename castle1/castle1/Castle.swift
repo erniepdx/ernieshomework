@@ -18,7 +18,6 @@ class Castle {
     private var _food:Int = 1000
     private var _money:Int = 10000
     private var _aggression:Int = 100
-    private var _growthRate:Float = 0.1
     
     private var _longTermImpediment:(()->(Bool))? = nil
     
@@ -181,13 +180,13 @@ class Castle {
         
         if _health < 10 {
             dHealth(100)
-            println("   " + self.castleName + " needed to spend this turn tending to the healthcare struggles of its subjects!\n    Health is now at " + String(_health) + ".")
+            println("   " + self.castleName + " needed to spend this turn tending to the healthcare struggles of its subjects!\n   Health is now at " + String(_health) + ".")
             return false
         }
         
         if _food < 10 {
             dFood(100)
-            println("   " + self.castleName + " needed to spend this turn battling malnutrition!\n  Food has increased to " + String(_food) + ".")
+            println("   " + self.castleName + " needed to spend this turn battling malnutrition!\n   Food has increased to " + String(_food) + ".")
             return false
         }
         
@@ -317,7 +316,7 @@ class Castle {
         _health += num
         if _health <= 0 {
             _health = 0
-            
+            isAlive = false
         }
     }
     
