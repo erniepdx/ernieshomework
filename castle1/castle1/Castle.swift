@@ -629,3 +629,311 @@ class KangarooCastle : Castle {
 }
 
 
+
+
+
+
+
+class BakeryCastle : Castle {
+    
+    var sugar:Int = 1000
+    var marzipanWall:Int = 30
+    
+    init(bName:String){
+        
+        super.init(myName: bName)
+        
+        _specialAttacks = [checkKangarooCourt, checkRapidKick, checkBouncingBrigade, checkDeathMarch]
+        
+    }
+    
+    
+    override func printStats(subopening: String) {
+        super.printStats(subopening)
+        print(", sugar: \(sugar), marzipan wall: \(marzipanWall)%")
+    }
+    
+    override func sufferFire() {
+        
+        super.sufferFire()
+        var damageSugar = randomPick(sugar/10)
+        var damageMW =  randomPick(marzipanWall/10)
+        
+        dSugar(-damageSugar)
+        dMarzipanWall(-damageMW)
+        
+        println("        sugar: \(sugar) (-\(damageSugar))\n        marzipan wall: \(marzipanWall)% (-\(damageMW)%)")
+        
+    }
+    
+    
+    override func sufferAttack(attack: (h: Int, p: Int, f: Int, m: Int, a: Int, canEvade: Bool), attacker: Castle) {
+        
+        var jumpNum = randomPick(4)
+        
+        var dmgHealth = attack.h * (100 - marzipanWall)/100
+        var dmgPopul = attack.h * (100 - marzipanWall)/100
+        var dmgFood = attack.h * (100 - marzipanWall)/100
+        var dmgMoney = attack.h * (100 - marzipanWall)/100
+        var dmgAggression = attack.h * (100 - marzipanWall)/100
+        
+        
+        if (attack.canEvade == true) {
+            
+            var dmgMarzipan = randomPick(5)
+            
+            dHealth(-dmgHealth)
+            dPopul(-dmgPopul)
+            dFood(-dmgPopul)
+            dMoney(-dmgMoney)
+            dAggression(-dmgAggression)
+            
+            println("   However, \(self.castleName)'s marzipan wall was able to reduce all damages by \(marzipanWall)%")
+            println("   \(self.castleName)'s marzipan wall sustained \(dmgMarzipan)% damage.")
+            
+
+            
+            
+        } else {
+            
+            dHealth(-attack.h)
+            dPopul(-attack.p)
+            dFood(-attack.f)
+            dMoney(-attack.m)
+            dAggression(-attack.a)
+            
+            println("   \(self.castleName) suffered the full brunt of the attack!")
+            
+        }
+        
+    }
+    
+    override func manageResources() {
+        
+        super.manageResources()
+        
+        var addSugar:Int = randomPick(30)
+        
+        dSugar(addSugar)
+        
+        println("   \(self.castleName) harvested and processed \(addSugar) sugar.")
+        
+        if(sugar >= 100 && marzipanWall < 80) {
+            
+            var newMarzipan = randomPick(2)
+            dMarzipanWall(newMarzipan)
+            dSugar(-newMarzipan*25)
+            println("   The marzipan wall was increased by \(newMarzipan)% using \(newMarzipan*25) sugar.")
+            
+            
+        }
+        
+        if marzipanWall == 80 {
+        
+            println("   \(self.castleName)'s marzipan wall is at the maximum height of 80%!")
+        
+        }
+        
+        
+    }
+    
+    
+    
+    func dSugar(num:Int) {
+        
+        sugar += num
+        if sugar <= 0 {
+            sugar = 0
+        }
+        
+        
+    }
+    
+    func dMarzipanWall(num:Int) {
+        
+        marzipanWall += num
+        if marzipanWall <= 0 {
+            marzipanWall = 0
+        }
+        if marzipanWall >= 80 {
+            marzipanWall = 80
+        }
+        
+    }
+    
+    
+    func checkKangarooCourt() -> (((Castle)->(), String)?) {
+        
+        func kangarooCourt(victim:Castle) ->() {
+            
+            var numRounds = 1 + randomPick(3)
+            var fine = randomPick(500)
+            
+            println("   \(self.castleName) dragged \(victim.castleName) into Kangaroo Court!")
+            println("   \(self.castleName) awarded itself a recurring fine of $\(fine) from \(victim.castleName) for \(numRounds) round(s)!")
+            
+            func court() -> Bool {
+                
+                if (numRounds > 0) {
+                    
+                    victim.dMoney(-fine)
+                    self.dMoney(fine)
+                    numRounds--
+                    
+                    println("   \(victim.castleName) paid $\(fine) in fines to \(self.castleName)!")
+                    return false
+                    
+                } else {
+                    victim._longTermImpediment = nil
+                    println("   \(victim.castleName) finished paying its fines to \(self.castleName)!")
+                    return false
+                }
+                
+            }
+            
+            victim.longTermImpediment = court
+            
+        }
+        
+        return (kangarooCourt, "KangarooCourt")
+        
+        
+    }
+    
+    func checkRapidKick() -> (((Castle)->(), String)?) {
+        
+        
+        var hasReqs:Bool = false
+        
+        if (self.aggression >= 105 && self.money >= 150 && self.health >= 300) {
+            
+            hasReqs = true
+        }
+        
+        
+        func rapidKick (victim:Castle) ->() {
+            
+            var i = 1 + randomPick(4)
+            var numTimes = i
+            var damage = 60
+            
+            
+            
+            while (i > 0) {
+                
+                println("   Kick!")
+                i--
+                
+            }
+            
+            println("   \(self.castleName) used RapidKick on \(victim.castleName), and kicked \(numTimes) time(s)!")
+            println("   \(self.castleName) dealt a total of \(numTimes*damage) health damage!")
+            victim.sufferAttack((numTimes*damage, 0, 0, 0, 0, true), attacker: self)
+            self.dMoney(-150)
+            
+            
+        }
+        
+        if (hasReqs){
+            
+            return (rapidKick, "RapidKick (cost: m 50)")
+            
+        } else {
+            
+            _unavailableAttackNames.append("RapidKick (req: a ≥ 105, h ≥ 300, m ≥ 50)")
+            return nil
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    func checkBouncingBrigade () -> (((Castle)->(), String)?) {
+        
+        var hasReqs = false
+        
+        
+        if (aggression >= 120 && trampolines >= 10 && money >= 750) {
+            hasReqs = true
+        }
+        
+        func bouncingBrigade(victim: Castle) {
+            
+            var damageHealth = 100 + randomPick(200)
+            var damagePop = 100 + randomPick(200)
+            
+            
+            println("   \(self.castleName) sent out the Bouncing Bringade!")
+            println("   The Bouncing Brigade set out to do \(damageHealth) health damage and liquidate \(damagePop) subjects of \(victim.castleName)!")
+            victim.sufferAttack((damageHealth, damagePop, 0, 0, 0, true), attacker: self)
+            dMoney(-750)
+            
+        }
+        
+        if (hasReqs) {
+            
+            return (bouncingBrigade, "BouncingBrigade (cost: m 750)")
+            
+        } else {
+            
+            _unavailableAttackNames.append("BouncingBrigade (req: m ≥ 750, a ≥ 120, trampolines ≥ 10)")
+            return nil
+            
+        }
+        
+        
+        
+        
+    }
+    
+    func checkDeathMarch () -> (((Castle)->(), String)?) {
+        
+        var hasReqs = false
+        
+        if (health <= 70 || popul <= 70) {
+            
+            hasReqs = true
+            
+        }
+        
+        func deathMarch(victim: Castle){
+            
+            var hdamage = 500 + self.aggression*2
+            
+            println(
+                "   With the very existence of the kingdom in the balance, every kangaroo has volunteered" +
+                    "\n   his/her own life for the very dream that their castle may survive into the eons! They\n" +
+                "   have gone on a DEATH MARCH.")
+            
+            self._health = 1
+            self._popul = 1
+            
+            victim.sufferAttack((hdamage, 0, 0, 0, 0, true), attacker: self)
+            
+            println("   Although the inhabitants of \(self.castleName) were able to commit a heroic amount of damage,\n   the civilian cost was enourmous.")
+            
+            
+        }
+        
+        if (hasReqs) {
+            
+            return (deathMarch, "DeathMarch (cost: h \(health - 1), p \(popul - 1))")
+            
+        } else {
+            
+            _unavailableAttackNames.append("DeathMarch (req: h/p ≤ 70)")
+            return nil
+            
+        }
+        
+        
+    }
+    
+}
+
+
+
